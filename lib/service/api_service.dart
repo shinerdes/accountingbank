@@ -5,7 +5,6 @@ final dioProvider = Provider<Dio>((ref) {
   Dio dio = Dio(
     BaseOptions(
       baseUrl: 'http://13.124.70.40',
-      //baseUrl: 'https://jsonplaceholder.typicode.com',
       connectTimeout: const Duration(milliseconds: 5000),
       receiveTimeout: const Duration(milliseconds: 5000),
     ),
