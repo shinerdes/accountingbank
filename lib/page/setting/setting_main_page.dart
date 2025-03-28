@@ -37,13 +37,13 @@ class _SettingMainPageState extends ConsumerState<SettingMainPage> {
               ),
               title: '내 정보 보기',
             ),
-            // SettingMainWidget(
-            //   icon: Icon(
-            //     Icons.calendar_month_outlined,
-            //     size: 30,
-            //   ),
-            //   title: '이번 달 출석',
-            // ),
+            SettingMainWidget(
+              icon: Icon(
+                Icons.calendar_month_outlined,
+                size: 30,
+              ),
+              title: '이번 달 출석',
+            ),
           ],
         ),
       ),
