@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final ThemeData wabizDefaultTheme = ThemeData(
+final ThemeData bankDefaultTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   fontFamily: "Pretendard",
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -21,7 +21,7 @@ final ThemeData wabizDefaultTheme = ThemeData(
         borderRadius: BorderRadius.circular(10),
       ),
       side: BorderSide(
-        color: AppColors.wabizGray[200]!,
+        color: AppColors.bankGray[200]!,
       ),
       foregroundColor: Colors.black,
       textStyle: const TextStyle(
@@ -57,7 +57,7 @@ final ThemeData wabizDefaultTheme = ThemeData(
     ),
     hintStyle: TextStyle(
       fontSize: 16,
-      color: AppColors.wabizGray[400],
+      color: AppColors.bankGray[400],
       fontWeight: FontWeight.w500,
     ),
   ),
@@ -84,7 +84,7 @@ class AppColors extends Color {
 
   static const int _grayPrimaryValue = 0xFF848487;
 
-  static const MaterialColor wabizGray = MaterialColor(
+  static const MaterialColor bankGray = MaterialColor(
     _grayPrimaryValue,
     <int, Color>{
       50: Color(0xFFFFEBEE),
@@ -102,11 +102,7 @@ class AppColors extends Color {
 }
 
 Container appBarBackground = Container(
-  decoration: const BoxDecoration(
-    gradient: LinearGradient(
-      colors: [Colors.white, Colors.lightBlue],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+  decoration: BoxDecoration(
+    color: Colors.lightBlue.shade300,
   ),
 );

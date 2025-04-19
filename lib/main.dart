@@ -1,13 +1,21 @@
 import 'package:accountingbank/router.dart';
 import 'package:accountingbank/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:url_strategy/url_strategy.dart';
+
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  runApp(const ProviderScope(child: MyApp()));
+  setPathUrlStrategy();
+  runApp(ProviderScope(child: MyApp()));
+  await Future.delayed(const Duration(seconds: 1));
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
@@ -27,15 +35,16 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: "wabiz",
+      title: "quiz",
       routerConfig: router,
-      theme: wabizDefaultTheme,
+
+      theme: bankDefaultTheme,
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.light,
-      themeAnimationStyle: AnimationStyle(
-        curve: Curves.easeInCirc,
-        duration: const Duration(milliseconds: 350),
-      ),
+      // themeAnimationStyle: AnimationStyle(
+      //   curve: Curves.easeInCirc,
+      //   duration: const Duration(milliseconds: 350),
+      // ),
     );
   }
 }

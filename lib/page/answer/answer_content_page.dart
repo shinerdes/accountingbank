@@ -6,10 +6,10 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 
 class AnswerContentPage extends ConsumerStatefulWidget {
-  AnswerContentPage({super.key, required this.id, required this.naming});
+  const AnswerContentPage({super.key, required this.id, required this.naming});
 
-  String id;
-  String naming;
+  final String id;
+  final String naming;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -21,15 +21,18 @@ class _AnswerContentPageState extends ConsumerState<AnswerContentPage> {
   Widget build(BuildContext context) {
     final oneproblem = ref.watch(oneProblemProvider(int.parse(widget.id)));
     final screen = MediaQuery.of(context).size;
-    print(widget.naming);
-    print('widget.id');
-    print(widget.id);
     int correntNumber = 0;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/answer');
+          },
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -67,7 +70,6 @@ class _AnswerContentPageState extends ConsumerState<AnswerContentPage> {
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 HtmlWidget(
                                   post.content,
@@ -86,16 +88,14 @@ class _AnswerContentPageState extends ConsumerState<AnswerContentPage> {
                                   },
                                 ),
                                 const SizedBox(height: 8.0),
-                                Text('① ${post.choices[0].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('② ${post.choices[1].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('③ ${post.choices[2].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('④ ${post.choices[3].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('⑤ ${post.choices[4].content}'),
-                                const SizedBox(height: 8.0),
+                                ...List.generate(
+                                  post.choices.length,
+                                  (index) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                        '${index + 1} ${post.choices[index].content}'),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -114,17 +114,15 @@ class _AnswerContentPageState extends ConsumerState<AnswerContentPage> {
                               flex: 1,
                               child: TextButton(
                                 onPressed: () {
-                                  for (int i = 0; i < 5; i++) {
-                                    print(post.choices[i].isAnswer);
-
-                                    if (post.choices[i].isAnswer == true) {
+                                  for (int i = 0;
+                                      i < post.choices.length;
+                                      i++) {
+                                    if (post.choices[i].isAnswer) {
                                       correntNumber = i + 1;
-                                      print('정답 $correntNumber');
                                     }
                                   }
-
                                   context.push(
-                                      '/answercommentary/${correntNumber.toString()}/${post.choices[correntNumber - 1].content}/${post.id}');
+                                      '/answercommentary/${correntNumber.toString()}/${post.choices[correntNumber - 1].content}/${post.id}/${widget.naming}');
                                 },
                                 child: const Text(
                                   "해설",
@@ -140,7 +138,8 @@ class _AnswerContentPageState extends ConsumerState<AnswerContentPage> {
                               flex: 1,
                               child: TextButton(
                                 onPressed: () {
-                                  context.push('/problemquestion/${post.id}');
+                                  context.go(
+                                      '/answerquestion/${post.id}/${widget.naming}');
                                 },
                                 child: const Text(
                                   "질문",

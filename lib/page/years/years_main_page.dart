@@ -8,7 +8,6 @@ class YearsMainPage extends StatefulWidget {
   State<YearsMainPage> createState() => _YearsMainPageState();
 }
 
-//context.push("/years/yearscontent");
 class _YearsMainPageState extends State<YearsMainPage> {
   final List<String> item = [
     "1.2024년",
@@ -22,30 +21,26 @@ class _YearsMainPageState extends State<YearsMainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: Column(
-        children: [
-          ListView.builder(
-            itemCount: item.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(item[index]),
-                onTap: () {
-                  context.push("/years/yearscontent");
-                },
-              );
-            },
-            scrollDirection: Axis.vertical,
-            reverse: false,
-            padding: const EdgeInsets.all(8.0),
-            primary: true,
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            addAutomaticKeepAlives: true,
-            addRepaintBoundaries: true,
-            addSemanticIndexes: true,
-          ),
-        ],
-      )),
+        child: Column(
+          children: [
+            ListView.builder(
+              itemCount: item.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(item[index]),
+                  onTap: () {
+                    context.push("/years/yearscontent");
+                  },
+                );
+              },
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.all(8.0),
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

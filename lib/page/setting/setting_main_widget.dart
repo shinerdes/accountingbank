@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingMainWidget extends ConsumerWidget {
   const SettingMainWidget({super.key, required this.icon, required this.title});
@@ -12,15 +13,12 @@ class SettingMainWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        context.go("/logintest");
+      },
       child: Container(
         height: 75,
-        margin: const EdgeInsets.only(
-          bottom: 8,
-          left: 32,
-          right: 32,
-          top: 8,
-        ),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
@@ -34,9 +32,11 @@ class SettingMainWidget extends ConsumerWidget {
             children: [
               icon,
               const Gap(10),
-              Text(title,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),

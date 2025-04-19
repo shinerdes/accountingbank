@@ -40,6 +40,7 @@ class ProblemAnswerWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     DateTime dateTime = DateTime.parse(createdAt);
+    final adjustedDateTime = dateTime.add(const Duration(hours: 9));
     return Container(
       //color: Colors.blueAccent,
       decoration: BoxDecoration(
@@ -82,7 +83,7 @@ class ProblemAnswerWidget extends ConsumerWidget {
                       ),
                   ],
                 ),
-                Text(convertToAgo(dateTime.add(const Duration(hours: 9)))),
+                Text(convertToAgo(adjustedDateTime)),
               ],
             ),
             const Gap(10),

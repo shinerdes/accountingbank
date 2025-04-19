@@ -6,12 +6,26 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class ProblemQuestionPage extends ConsumerStatefulWidget {
-  ProblemQuestionPage({super.key, required this.id});
+  ProblemQuestionPage({
+    super.key,
+    required this.questionId,
+    required this.examid,
+    required this.naming,
+    required this.roundId,
+    required this.year,
+    required this.pageNumber,
+  });
 
-  String id;
+  String questionId;
+  String examid;
+  String naming;
+  String roundId;
+  String year;
+  String pageNumber;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -28,7 +42,7 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
 
     // Load initial data
     Future.microtask(() => ref
-        .read(paginatedPostProvider(int.parse(widget.id)).notifier)
+        .read(paginatedPostProvider(int.parse(widget.questionId)).notifier)
         .fetchData());
   }
 
@@ -40,7 +54,7 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
 
   void _onScroll() {
     final notifier =
-        ref.read(paginatedPostProvider(int.parse(widget.id)).notifier);
+        ref.read(paginatedPostProvider(int.parse(widget.questionId)).notifier);
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       notifier.fetchData();
@@ -49,26 +63,34 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    String questionId = widget.id;
-    final allquestion = ref.watch(allQuestionProvider(int.parse(widget.id)));
+    String questionId = widget.questionId;
+    final allquestion =
+        ref.watch(allQuestionProvider(int.parse(widget.questionId)));
 
-    final dataState = ref.watch(paginatedPostProvider(int.parse(widget.id)));
+    final dataState =
+        ref.watch(paginatedPostProvider(int.parse(widget.questionId)));
     final notifier =
-        ref.read(paginatedPostProvider(int.parse(widget.id)).notifier);
+        ref.read(paginatedPostProvider(int.parse(widget.questionId)).notifier);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(
+                '/exam/${widget.examid}/${widget.roundId}/${widget.year}/${widget.naming}/${widget.pageNumber}');
+          },
+        ),
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                GoRouter.of(context).go('/subject');
-              }),
+            icon: const Icon(Icons.home, color: Colors.black),
+            onPressed: () {
+              GoRouter.of(context).go('/subject');
+            },
+          ),
+          Gap(8.0),
         ],
       ),
       body: SafeArea(
@@ -90,23 +112,20 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
                     Expanded(
                       child: ListView.builder(
                         controller: _scrollController,
-                        itemCount: dataList.length +
-                            (notifier.hasMore
-                                ? 1
-                                : 0), // ✅ No extra item if no more data
+                        itemCount: dataList.length + (notifier.hasMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == dataList.length) {
                             return notifier.hasMore
-                                ? const Center(
-                                    child:
-                                        null) // ✅ Show only if more data is available
+                                ? const Center(child: null)
                                 : const Center(
                                     child: Padding(
                                       padding: EdgeInsets.all(16),
-                                      child: Text("No more data",
-                                          style: TextStyle(color: Colors.grey)),
+                                      child: Text(
+                                        "No more data",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
                                     ),
-                                  ); // ✅ Show message instead of loader when no more data
+                                  );
                           }
 
                           final item = dataList[index];
@@ -118,6 +137,11 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
                             createdAt: item.createdAt,
                             answerCount: item.answerCount,
                             questionId: questionId,
+                            examid: widget.examid,
+                            naming: widget.naming,
+                            roundId: widget.roundId,
+                            year: widget.year,
+                            pageNumber: widget.pageNumber,
                           );
                         },
                       ),
@@ -134,15 +158,12 @@ class _ProblemQuestionPageState extends ConsumerState<ProblemQuestionPage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.lightBlue,
           foregroundColor: Colors.white,
           onPressed: () {
             context.push('/problemnewquestion/$questionId');
           },
-          tooltip: 'new',
-          child: const Icon(
-            CupertinoIcons.add,
-          ),
+          child: const Icon(CupertinoIcons.add),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

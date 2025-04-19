@@ -1,0 +1,2 @@
+/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/Debug/5to484v2/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/Debug/5to484v2/arm64-v8a/CMakeFiles/rebuild_cache.dir

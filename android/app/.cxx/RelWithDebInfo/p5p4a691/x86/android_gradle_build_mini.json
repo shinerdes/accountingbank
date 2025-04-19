@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/shinerdes/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/shinerdes/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/RelWithDebInfo/p5p4a691/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/shinerdes/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/RelWithDebInfo/p5p4a691/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

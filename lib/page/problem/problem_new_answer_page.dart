@@ -12,10 +12,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class ProblemNewAnswerPage extends ConsumerStatefulWidget {
-  ProblemNewAnswerPage({super.key, required this.id, required this.questionId});
+  const ProblemNewAnswerPage(
+      {super.key, required this.id, required this.questionId});
 
-  String id;
-  String questionId;
+  final String id;
+  final String questionId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -23,14 +24,13 @@ class ProblemNewAnswerPage extends ConsumerStatefulWidget {
 }
 
 class _ProblemNewAnswerPageState extends ConsumerState<ProblemNewAnswerPage> {
-  TextEditingController emailTextController = TextEditingController();
-  TextEditingController passwordTextController = TextEditingController();
-  TextEditingController contentTextController = TextEditingController();
-  late String nick = "";
-  late ScrollController scrollController = ScrollController();
-  bool _isObscured = true;
-
+  final TextEditingController usernameTextController = TextEditingController();
+  final TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController contentTextController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
+
+  bool _isObscured = true;
   bool _isFocused = false;
 
   @override
@@ -49,242 +49,266 @@ class _ProblemNewAnswerPageState extends ConsumerState<ProblemNewAnswerPage> {
   void dispose() {
     _focusNode.removeListener(_handleFocusChange);
     _focusNode.dispose();
+    usernameTextController.dispose();
+    passwordTextController.dispose();
+    contentTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
-    print(widget.questionId);
-
     return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
-      },
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          flexibleSpace: appBarBackground,
-        ),
+        appBar: AppBar(flexibleSpace: appBarBackground),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const ClampingScrollPhysics(),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Form(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "비밀번호",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Gap(15),
-                        TextFormField(
-                          obscureText: _isObscured,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(8),
-                          ],
-                          controller: passwordTextController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isObscured
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _isObscured = !_isObscured; // Toggle state
-                                });
-                              },
-                            ),
-                            hintText: "비밀번호를 입력해주세요",
-                            filled: true,
-                            fillColor: const Color(0xFFF2F4F6),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.orange, width: 2.0),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: AppColors.primary, width: 2.0),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "필수 입력 항목입니다.";
-                            }
-                            return null;
-                          },
-                        ),
-                        const Gap(15),
-                        const Text(
-                          "내용",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Gap(15),
-                        Container(
-                          height: 250,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFF2F4F6),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5)),
-                              border: Border.all(
-                                  width: 2,
-                                  color: _isFocused
-                                      ? Colors.orange
-                                      : AppColors.primary)),
-                          child: Scrollbar(
-                            controller: scrollController, //여기도 전달
-                            thumbVisibility: true,
-                            thickness: 5.0,
-                            child: TextFormField(
-                              focusNode: _focusNode,
-                              scrollController: scrollController,
-                              controller: contentTextController,
-                              decoration: const InputDecoration(
-                                isDense: true,
-                                hintText: '내용을 입력해주세요!',
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                              textInputAction: TextInputAction.newline,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              onChanged: (value) {
-                                scrollController.jumpTo(
-                                    scrollController.position.maxScrollExtent);
-                              },
-                            ),
-                          ),
-                        ),
-                        const Gap(15),
-                        GestureDetector(
-                          onTap: () async {
-                            if (passwordTextController.text != '' &&
-                                contentTextController.text != '') {
-                              await ref
-                                  .read(writeAnswerNotifierProvider.notifier)
-                                  .createPost(
-                                      WriteAnswer(
-                                          password: passwordTextController.text,
-                                          username: '김대원',
-                                          content: contentTextController.text),
-                                      widget.id);
-
-                              context.pop();
-
-                              ref.invalidate(
-                                  oneQuestionProvider(int.parse(widget.id)));
-                              ref.invalidate(
-                                  allAnswerProvider(int.parse(widget.id)));
-
-                              ref.invalidate(allQuestionProvider(
-                                  int.parse(widget.questionId))); // question id
-                              ref.invalidate(paginatedPostProvider(
-                                  int.parse(widget.questionId)));
-
-                              Future.microtask(() => ref
-                                  .read(paginatedPostProvider(
-                                          int.parse(widget.questionId))
-                                      .notifier)
-                                  .refreshData());
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                        color: Colors.blue,
-                                        width: 2), // Custom border color
-                                    borderRadius: BorderRadius.circular(
-                                        20), // Rounded corners
-                                  ),
-                                  title: const Text(
-                                    '오류',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  content: const SizedBox(
-                                    height: 55,
-                                    child: Text('필수 입력 사항이 비어있습니다.',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 15)),
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          side: const BorderSide(
-                                              color: Colors.blue, width: 2.0),
-                                        ),
-                                        backgroundColor: Colors.lightBlue,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        context.pop();
-                                      },
-                                      child: const Text('확인'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          },
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(.55),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "작성하기",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Gap(15),
-                      ],
-                    ),
-                  ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildNameAndPasswordFields(),
+                    const Gap(15),
+                    _buildContentField(),
+                    const Gap(15),
+                    _buildSubmitButton(context),
+                    const Gap(15),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildNameAndPasswordFields() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: _buildTextField(
+            label: "이름",
+            hintText: "이름",
+            controller: usernameTextController,
+            inputFormatters: [LengthLimitingTextInputFormatter(12)],
+          ),
+        ),
+        const Gap(10),
+        Flexible(
+          child: _buildTextField(
+            label: "비밀번호",
+            hintText: "최대 숫자 8자리",
+            controller: passwordTextController,
+            obscureText: _isObscured,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(8),
+            ],
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isObscured ? Icons.visibility_off : Icons.visibility,
+              ),
+              onPressed: () => setState(() => _isObscured = !_isObscured),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hintText,
+    required TextEditingController controller,
+    List<TextInputFormatter>? inputFormatters,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        const Gap(15),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          inputFormatters: inputFormatters,
+          decoration: InputDecoration(
+            hintText: hintText,
+            filled: true,
+            fillColor: const Color(0xFFF2F4F6),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange, width: 2.0),
+            ),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary, width: 2.0),
+            ),
+            suffixIcon: suffixIcon,
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? "필수 입력 항목입니다." : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContentField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "내용",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        const Gap(15),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF2F4F6),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            border: Border.all(
+              width: 2,
+              color: _isFocused ? Colors.orange : AppColors.primary,
+            ),
+          ),
+          child: Scrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            thickness: 5.0,
+            child: TextFormField(
+              focusNode: _focusNode,
+              scrollController: scrollController,
+              controller: contentTextController,
+              decoration: const InputDecoration(
+                isDense: true,
+                hintText: '내용을 입력해주세요',
+                border: InputBorder.none,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              onChanged: (_) => scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        if (_isFormValid()) {
+          await _submitForm(context);
+        } else {
+          _showErrorDialog(context);
+        }
+      },
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.lightBlue,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Center(
+          child: Text(
+            "등록하기",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool _isFormValid() {
+    return usernameTextController.text.isNotEmpty &&
+        passwordTextController.text.isNotEmpty &&
+        contentTextController.text.isNotEmpty;
+  }
+
+  Future<void> _submitForm(BuildContext context) async {
+    await ref.read(writeAnswerNotifierProvider.notifier).createPost(
+          WriteAnswer(
+            password: passwordTextController.text,
+            username: usernameTextController.text,
+            content: contentTextController.text,
+          ),
+          widget.id,
+        );
+
+    context.pop();
+    ref.invalidate(oneQuestionProvider(int.parse(widget.id)));
+    ref.invalidate(allAnswerProvider(int.parse(widget.id)));
+    ref.invalidate(allQuestionProvider(int.parse(widget.questionId)));
+    ref.invalidate(paginatedPostProvider(int.parse(widget.questionId)));
+
+    Future.microtask(() => ref
+        .read(paginatedPostProvider(int.parse(widget.questionId)).notifier)
+        .refreshData());
+  }
+
+  void _showErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text(
+          '오류',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        content: const SizedBox(
+          height: 55,
+          child: Text(
+            '필수 입력 사항이 비어있습니다.',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.normal,
+                fontSize: 15),
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: const BorderSide(color: Colors.blue, width: 2.0),
+              ),
+              backgroundColor: Colors.lightBlue,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => context.pop(),
+            child: const Text('확인'),
+          ),
+        ],
       ),
     );
   }

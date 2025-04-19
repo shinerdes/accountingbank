@@ -4,11 +4,13 @@ import 'package:accountingbank/theme.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ProblemYearPage extends ConsumerStatefulWidget {
-  const ProblemYearPage({super.key, required this.id, required this.naming});
+  const ProblemYearPage(
+      {super.key, required this.subjectId, required this.naming});
 
-  final String id;
+  final String subjectId;
   final String naming;
 
   @override
@@ -20,12 +22,18 @@ class _ProblemYearPageState extends ConsumerState<ProblemYearPage> {
 
   @override
   Widget build(BuildContext context) {
-    final allYear = ref.watch(yearExamProvider(int.parse(widget.id)));
+    final allYear = ref.watch(yearExamProvider(int.parse(widget.subjectId)));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // 왼쪽 화살표 아이콘
+          onPressed: () {
+            context.go('/subject'); // 이전 페이지로 이동
+          },
+        ),
       ),
       body: allYear.when(
         data: (post) => Padding(
@@ -39,7 +47,7 @@ class _ProblemYearPageState extends ConsumerState<ProblemYearPage> {
                   itemCount: post.data.length,
                   itemBuilder: (context, index) {
                     return ProblemYearWidget(
-                      id: widget.id,
+                      id: widget.subjectId,
                       year: post.data[index].toString(),
                       name: "${widget.naming} ${post.data[index]}년",
                     );

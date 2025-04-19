@@ -1,3 +1,7 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:accountingbank/provider/all_problem_provider.dart';
 import 'package:accountingbank/provider/favorite_list_provider.dart';
 import 'package:accountingbank/provider/int_list_provider.dart';
@@ -5,6 +9,9 @@ import 'package:accountingbank/provider/pagenation_provider.dart';
 import 'package:accountingbank/theme.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as html;
+import 'package:flutter_html/flutter_html.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
@@ -13,10 +20,19 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProblemExamPage extends ConsumerStatefulWidget {
-  final String id;
+  final String examId;
+  final String roundId;
+  final String year;
   final String naming;
+  final String pageNumber;
 
-  const ProblemExamPage({super.key, required this.id, required this.naming});
+  const ProblemExamPage(
+      {super.key,
+      required this.examId,
+      required this.roundId,
+      required this.year,
+      required this.naming,
+      required this.pageNumber});
 
   @override
   _ProblemExamPageState createState() => _ProblemExamPageState();
@@ -26,31 +42,55 @@ final pageCounterProvider = StateProvider<int>((ref) => 0);
 
 enum Number { one, two, three, four, five }
 
+List circleNumberList = ['①', '②', '③', '④', '⑤'];
+
 class _ProblemExamPageState extends ConsumerState<ProblemExamPage> {
   bool value = true;
-  int page = 0;
-  int correntNumber = 0;
-  int imsi = 0;
+  late int page;
+
+  @override
+  void initState() {
+    super.initState();
+    page = int.parse(widget.pageNumber);
+  }
+
+  int correntNumber = 0; // 정답번호
   Number? _number;
 
   final dio = Dio()..interceptors.add(LogInterceptor());
 
   @override
   Widget build(BuildContext context) {
-    final exam = ref.watch(allProblemProvider(int.parse(widget.id)));
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    final exam = ref.watch(allProblemProvider(int.parse(widget.examId)));
     final favorite = ref.watch(favoriteListProvider);
     int totalpage = exam.value?.length ?? 0;
 
+    // Scaffold 시작
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // 왼쪽 화살표 아이콘
+          onPressed: () {
+            String original = widget.naming;
+            String result =
+                original.replaceAll(RegExp(r' 제 \d+회'), ""); // " 제 숫자회" 패턴 제거
+
+            // 이전 페이지로 이동
+            context.go('/round/${widget.roundId}/${widget.year}/$result');
+          },
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home, color: Colors.white),
+            icon: const Icon(Icons.home, color: Colors.black),
             onPressed: () {
-              GoRouter.of(context).go('/subject');
+              GoRouter.of(context).go('/subject'); // 홈으로 이동
             },
           ),
+          Gap(8.0),
         ],
       ),
       body: SafeArea(
@@ -147,18 +187,33 @@ class _ProblemExamPageState extends ConsumerState<ProblemExamPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                HtmlWidget(post[page].content),
-                                const SizedBox(height: 8.0),
-                                Text('① ${post[page].choices[0].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('② ${post[page].choices[1].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('③ ${post[page].choices[2].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('④ ${post[page].choices[3].content}'),
-                                const SizedBox(height: 8.0),
-                                Text('⑤ ${post[page].choices[4].content}'),
-                                const SizedBox(height: 8.0),
+                                HtmlWidget(
+                                  post[page].content,
+                                  customStylesBuilder: (element) {
+                                    switch (element.localName) {
+                                      case 'table':
+                                        return {
+                                          'border': '1px solid',
+                                          'border-collapse': 'collapse',
+                                        };
+                                      case 'td':
+                                        return {'border': '1px solid'};
+                                      default:
+                                        return null;
+                                    }
+                                  },
+                                  onErrorBuilder: (context, element, error) {
+                                    return Text('Failed to load image: $error');
+                                  },
+                                ),
+                                Gap(20),
+                                for (int i = 0;
+                                    i < post[page].choices.length;
+                                    i++) ...[
+                                  Text(
+                                      '${circleNumberList[i]} ${post[page].choices[i].content}'),
+                                  const SizedBox(height: 8.0),
+                                ],
                               ],
                             ),
                           ),
@@ -176,13 +231,19 @@ class _ProblemExamPageState extends ConsumerState<ProblemExamPage> {
                               flex: 1,
                               child: TextButton(
                                 onPressed: () {
-                                  for (int i = 0; i < 5; i++) {
+                                  for (int i = 0;
+                                      i < post[page].choices.length;
+                                      i++) {
                                     if (post[page].choices[i].isAnswer) {
                                       correntNumber = i + 1;
                                     }
                                   }
-                                  context.push(
-                                      "/problemcommentary/${correntNumber.toString()}/${post[page].choices[correntNumber - 1].content}/${post[page].id}");
+
+                                  //name/:roundid/:year
+                                  // 정답 번호 / 정답 내용 / 문제 id / 문제 이름 / 회차 id / 년도
+                                  // '/problemcommentary/:correntNumber/:correntString/:id/:examid/:name/:roundid/:year',
+                                  context.go(
+                                      "/problemcommentary/${correntNumber.toString()}/${post[page].choices[correntNumber - 1].content}/${post[page].id}/${widget.examId}/${widget.naming}/${widget.roundId}/${widget.year}/${page.toString()}");
                                 },
                                 child: const Text(
                                   "해설",
@@ -200,8 +261,10 @@ class _ProblemExamPageState extends ConsumerState<ProblemExamPage> {
                                 onPressed: () {
                                   ref.invalidate(
                                       paginatedPostProvider(post[page].id));
-                                  context.push(
-                                      '/problemquestion/${post[page].id}');
+
+                                  // '/problemquestion/:questionId/:examId/:roundId/:year/:naming/:pageNumber',
+                                  context.go(
+                                      '/problemquestion/${post[page].id}/${widget.examId}/${widget.roundId}/${widget.year}/${widget.naming}/${page.toString()}');
                                   Future.microtask(() => ref
                                       .read(paginatedPostProvider(post[page].id)
                                           .notifier)
@@ -440,16 +503,39 @@ class _ProblemExamPageState extends ConsumerState<ProblemExamPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          title: const Text("알림"),
-          content: Text(msg),
-          actions: <Widget>[
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+                color: Colors.blue, width: 2), // Custom border color
+            borderRadius: BorderRadius.circular(20), // Rounded corners
+          ),
+          title: const Text(
+            '알림',
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          content: SizedBox(
+            height: 55,
+            child: Text(msg,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 15)),
+          ),
+          actions: [
             ElevatedButton(
-              child: const Text("확인"),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Colors.blue, width: 2.0),
+                ),
+                backgroundColor: Colors.lightBlue,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
+              child: const Text('확인'),
             ),
           ],
         );

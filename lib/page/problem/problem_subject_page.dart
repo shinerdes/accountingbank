@@ -13,10 +13,7 @@ class ProblemSubjectPage extends ConsumerStatefulWidget {
 }
 
 class _ProblemSubjectPageState extends ConsumerState<ProblemSubjectPage> {
-  final dio = Dio()
-    ..interceptors.add(
-      LogInterceptor(),
-    );
+  final dio = Dio()..interceptors.add(LogInterceptor());
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,9 @@ class _ProblemSubjectPageState extends ConsumerState<ProblemSubjectPage> {
                   itemBuilder: (context, index) {
                     final item = post.data[index];
                     return ProblemSubjectWidget(
-                        name: item.name, id: item.id.toString());
+                      name: item.name,
+                      id: item.id.toString(),
+                    );
                   },
                 ),
               ),

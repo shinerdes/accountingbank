@@ -1,0 +1,2 @@
+/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/RelWithDebInfo/p5p4a691/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/shinerdes/Desktop/bank/accountingbank/android/app/.cxx/RelWithDebInfo/p5p4a691/armeabi-v7a/CMakeFiles/rebuild_cache.dir

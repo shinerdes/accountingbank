@@ -219,10 +219,9 @@ class _ProblemFixAnswerPageState extends ConsumerState<ProblemFixAnswerPage> {
                                         backgroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           side: const BorderSide(
-                                              color: Colors.blue,
-                                              width: 2), // Custom border color
-                                          borderRadius: BorderRadius.circular(
-                                              20), // Rounded corners
+                                              color: Colors.blue, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
                                         title: const Text(
                                           '오류',
@@ -233,11 +232,13 @@ class _ProblemFixAnswerPageState extends ConsumerState<ProblemFixAnswerPage> {
                                         ),
                                         content: const SizedBox(
                                           height: 55,
-                                          child: Text('비밀번호가 맞지 않습니다.',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 15)),
+                                          child: Text(
+                                            '비밀번호가 맞지 않습니다.',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 15),
+                                          ),
                                         ),
                                         actions: [
                                           ElevatedButton(
@@ -315,7 +316,7 @@ class _ProblemFixAnswerPageState extends ConsumerState<ProblemFixAnswerPage> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(.55),
+                              color: Colors.lightBlue,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Center(

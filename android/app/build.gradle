@@ -28,12 +28,23 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+   android {
+    compileSdkVersion 35 // 안정적인 버전으로 변경
+    defaultConfig {
+        targetSdkVersion 35
     }
+}
+
+    compileOptions {
+     
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+       // sourceCompatibility = JavaVersion.VERSION_1_8
+        // targetCompatibility = JavaVersion.VERSION_1_8
 
     defaultConfig {
+        minSdkVersion flutter.minSdkVersion
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.accountingbank"
         // You can update the following values to match your application needs.
@@ -42,6 +53,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        
     }
 
     buildTypes {
@@ -55,4 +67,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }

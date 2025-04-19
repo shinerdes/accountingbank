@@ -75,9 +75,6 @@ class _ProblemFixQuestionPageState
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
-    print(widget.questionId);
-
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
@@ -207,10 +204,9 @@ class _ProblemFixQuestionPageState
                                       ? Colors.orange
                                       : AppColors.primary)),
                           child: Scrollbar(
-                            controller: scrollController, //여기도 전달
+                            controller: scrollController,
                             thumbVisibility: true,
                             thickness: 5.0,
-
                             child: TextFormField(
                               scrollPadding: EdgeInsets.only(
                                   bottom:
@@ -244,13 +240,10 @@ class _ProblemFixQuestionPageState
                           ),
                         ),
                         const Gap(15),
-                        const Gap(15),
                         GestureDetector(
                           onTap: () async {
                             if (emailTextController.text != '' &&
                                 passwordTextController.text != '') {
-                              print('등록하기');
-
                               ref
                                   .read(verificationQuestionPwdNotifierProvider(
                                           QuestionParams(widget.id,
@@ -259,8 +252,6 @@ class _ProblemFixQuestionPageState
                                   .fetchData()
                                   .then(
                                 (value) async {
-                                  print(value);
-
                                   if (value == true) {
                                     await ref
                                         .read(fixQuestionNotifierProvider
@@ -292,10 +283,9 @@ class _ProblemFixQuestionPageState
                                         backgroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           side: const BorderSide(
-                                              color: Colors.blue,
-                                              width: 2), // Custom border color
-                                          borderRadius: BorderRadius.circular(
-                                              20), // Rounded corners
+                                              color: Colors.blue, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
                                         title: const Text(
                                           '오류',
@@ -343,10 +333,8 @@ class _ProblemFixQuestionPageState
                                   backgroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     side: const BorderSide(
-                                        color: Colors.blue,
-                                        width: 2), // Custom border color
-                                    borderRadius: BorderRadius.circular(
-                                        20), // Rounded corners
+                                        color: Colors.blue, width: 2),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   title: const Text(
                                     '오류',
@@ -388,7 +376,7 @@ class _ProblemFixQuestionPageState
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(.55),
+                              color: Colors.lightBlue,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Center(
@@ -403,7 +391,6 @@ class _ProblemFixQuestionPageState
                             ),
                           ),
                         ),
-                        const Gap(15),
                       ],
                     ),
                   ),

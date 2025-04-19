@@ -8,7 +8,7 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
-
+#  sdk: ">=3.0.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -26,12 +26,17 @@ dependencies:
   riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
   flutter_riverpod: ^2.6.1
-  freezed: ^2.5.8
+  freezed: ^3.0.6
   shared_preferences: ^2.5.1
-  flutter_widget_from_html: ^0.15.3
+  flutter_widget_from_html: ^0.16.0
   gap: ^3.0.1
   timeago: ^3.7.0
   percent_indicator: ^4.2.4
+  google_sign_in: ^6.3.0
+  flutter_native_splash: ^2.4.6
+  flutter_html: ^3.0.0
+  flutter_launcher_icons: ^0.14.3
+  url_strategy: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -39,7 +44,7 @@ dev_dependencies:
   json_serializable: ^6.9.0
 
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

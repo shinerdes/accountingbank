@@ -1,21 +1,24 @@
 import 'package:accountingbank/provider/one_problem_provider.dart';
 import 'package:accountingbank/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class AnswerCommentaryPage extends ConsumerStatefulWidget {
-  AnswerCommentaryPage(
-      {super.key,
-      required this.correntNumber,
-      required this.correntString,
-      required this.id});
+  const AnswerCommentaryPage({
+    super.key,
+    required this.correntNumber,
+    required this.correntString,
+    required this.examId,
+    required this.naming,
+  });
 
-  String correntNumber;
-  String correntString;
-  String id;
+  final String correntNumber;
+  final String correntString;
+  final String examId;
+  final String naming;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -25,11 +28,26 @@ class AnswerCommentaryPage extends ConsumerStatefulWidget {
 class _AnswerCommentaryPageState extends ConsumerState<AnswerCommentaryPage> {
   @override
   Widget build(BuildContext context) {
-    final oneproblem = ref.watch(oneProblemProvider(int.parse(widget.id)));
+    final oneproblem = ref.watch(oneProblemProvider(int.parse(widget.examId)));
 
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go("/answercontent/${widget.examId}/${widget.naming}");
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.black),
+            onPressed: () {
+              GoRouter.of(context).go('/answer');
+            },
+          ),
+          Gap(8.0),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -46,13 +64,17 @@ class _AnswerCommentaryPageState extends ConsumerState<AnswerCommentaryPage> {
                       Text(
                         '정답: ${widget.correntNumber}번',
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const Gap(10),
                       Text(
                         widget.correntString,
                         style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const Gap(10),
                       oneproblem.when(
@@ -79,7 +101,7 @@ class _AnswerCommentaryPageState extends ConsumerState<AnswerCommentaryPage> {
                             const Center(child: CircularProgressIndicator()),
                         error: (error, _) =>
                             Center(child: Text('Error: $error')),
-                      )
+                      ),
                     ],
                   ),
                 ),

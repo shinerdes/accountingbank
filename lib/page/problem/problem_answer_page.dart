@@ -21,11 +21,25 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProblemAnswerPage extends ConsumerStatefulWidget {
-  const ProblemAnswerPage(
-      {super.key, required this.id, required this.questionId});
+  const ProblemAnswerPage({
+    super.key,
+    required this.id,
+    required this.questionId,
+    required this.examId,
+    required this.naming,
+    required this.roundId,
+    required this.year,
+    required this.pageNumber,
+  });
 
   final String id;
   final String questionId;
+
+  final String examId;
+  final String naming;
+  final String roundId;
+  final String year;
+  final String pageNumber;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -51,15 +65,23 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: appBarBackground,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(
+                '/problemquestion/${widget.questionId}/${widget.examId}/${widget.roundId}/${widget.year}/${widget.naming}/${widget.pageNumber}');
+          },
+        ),
         actions: [
           IconButton(
               icon: const Icon(
                 Icons.home,
-                color: Colors.white,
+                color: Colors.black,
               ),
               onPressed: () {
                 GoRouter.of(context).go('/subject');
               }),
+          Gap(8.0),
         ],
       ),
       body: SingleChildScrollView(
@@ -85,8 +107,7 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ConstrainedBox(
-                            constraints: const BoxConstraints(
-                                maxWidth: 270), // Custom width
+                            constraints: const BoxConstraints(maxWidth: 270),
                             child: Text(
                               post.title,
                               style: const TextStyle(
@@ -151,11 +172,9 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                           backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             side: const BorderSide(
-                                                color: Colors.blue,
-                                                width:
-                                                    2), // Custom border color
-                                            borderRadius: BorderRadius.circular(
-                                                20), // Rounded corners
+                                                color: Colors.blue, width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
                                           title: const Text(
                                             "비밀번호를 입력하세요",
@@ -186,7 +205,7 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                                 onPressed: () {
                                                   setState(() {
                                                     _obscureText =
-                                                        !_obscureText; // Toggle state
+                                                        !_obscureText;
                                                   });
                                                 },
                                               ),
@@ -201,10 +220,6 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                                 borderSide: BorderSide(
                                                     color: Colors.blue,
                                                     width: 2.0),
-                                              ),
-                                              disabledBorder:
-                                                  const OutlineInputBorder(
-                                                borderSide: BorderSide.none,
                                               ),
                                             ),
                                           ),
@@ -268,7 +283,8 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                                               widget.id));
 
                                                       context.pop();
-                                                      context.pop();
+                                                      context.go(
+                                                          '/problemquestion/${widget.questionId}/${widget.examId}/${widget.roundId}/${widget.year}/${widget.naming}/${widget.pageNumber}');
 
                                                       ref.invalidate(
                                                           allQuestionProvider(
@@ -296,15 +312,15 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                                               Colors.white,
                                                           shape:
                                                               RoundedRectangleBorder(
-                                                            side: const BorderSide(
-                                                                color:
-                                                                    Colors.blue,
-                                                                width:
-                                                                    2), // Custom border color
+                                                            side:
+                                                                const BorderSide(
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    width: 2),
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        20), // Rounded corners
+                                                                        20),
                                                           ),
                                                           title: const Text(
                                                             '실패',
@@ -386,10 +402,8 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                     backgroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       side: const BorderSide(
-                                          color: Colors.blue,
-                                          width: 2), // Custom border color
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Rounded corners
+                                          color: Colors.blue, width: 2),
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
                                     title: const Text(
                                       '실패',
@@ -469,7 +483,7 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                         IconButton(
                           onPressed: () {
                             context.push(
-                                '/problemnewanswer/${widget.id}/${widget.questionId}'); // id 추가
+                                '/problemnewanswer/${widget.id}/${widget.questionId}');
                           },
                           icon: const Icon(
                             CupertinoIcons.add,
