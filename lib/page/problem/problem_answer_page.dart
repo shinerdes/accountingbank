@@ -12,6 +12,7 @@ import 'package:accountingbank/provider/verification_answer_password_provider.da
 import 'package:accountingbank/provider/verification_question_password_provider.dart';
 import 'package:accountingbank/theme.dart';
 import 'package:accountingbank/timeago.dart';
+import 'package:accountingbank/top_snack_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ProblemAnswerPage extends ConsumerStatefulWidget {
   const ProblemAnswerPage({
@@ -295,6 +298,15 @@ class _ProblemAnswerPageState extends ConsumerState<ProblemAnswerPage> {
                                                           paginatedPostProvider(
                                                               int.parse(widget
                                                                   .questionId)));
+
+                                                      // 삭제하는 popup
+                                                      showTopSnackBar(
+                                                        Overlay.of(context),
+                                                        TopSnackBar.success(
+                                                          message:
+                                                              "질문이 삭제되었습니다.",
+                                                        ),
+                                                      );
 
                                                       Future.microtask(() => ref
                                                           .read(paginatedPostProvider(

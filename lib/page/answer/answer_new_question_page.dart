@@ -4,11 +4,14 @@ import 'package:accountingbank/provider/pagenation_provider.dart';
 import 'package:accountingbank/provider/verification_question_password_provider.dart';
 import 'package:accountingbank/provider/write_question_post_provider.dart';
 import 'package:accountingbank/theme.dart';
+import 'package:accountingbank/top_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AnswerNewQuestionPage extends ConsumerStatefulWidget {
   const AnswerNewQuestionPage({super.key, required this.id});
@@ -255,6 +258,12 @@ class _ProblemNewQuestionPageState
 
           context.pop();
 
+          showTopSnackBar(
+            Overlay.of(context),
+            TopSnackBar.success(
+              message: "질문이 등록되었습니다.",
+            ),
+          );
           Future.microtask(() => ref
               .read(paginatedPostProvider(int.parse(widget.id)).notifier)
               .refreshData());

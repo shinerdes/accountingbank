@@ -7,12 +7,15 @@ import 'package:accountingbank/provider/pagenation_provider.dart';
 import 'package:accountingbank/provider/remove_answer_delete_provider.dart';
 import 'package:accountingbank/provider/verification_answer_password_provider.dart';
 import 'package:accountingbank/timeago.dart';
+import 'package:accountingbank/top_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AnswerAnswerWidget extends ConsumerWidget {
   AnswerAnswerWidget({
@@ -228,6 +231,13 @@ class AnswerAnswerWidget extends ConsumerWidget {
 
                                           ref.invalidate(allAnswerProvider(
                                               int.parse(answerId)));
+
+                                          showTopSnackBar(
+                                            Overlay.of(context),
+                                            TopSnackBar.success(
+                                              message: "답변이 삭제되었습니다.",
+                                            ),
+                                          );
 
                                           ref
                                               .read(paginatedPostProvider(

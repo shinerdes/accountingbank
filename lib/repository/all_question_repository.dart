@@ -14,7 +14,6 @@ class AllQuestionRepository {
   AllQuestionRepository(this._dio);
 
   Future<AllQuestion> fetchPosts(int id) async {
-    print("e");
     final response =
         await _dio.get('/api/v1/problem/$id/question?page=0&size=10');
 
